@@ -1,0 +1,59 @@
+# Ververst 2x per dag de RSS-feeds en commit data/items.json terug naar main.
+name: Feeds verversen
+
+on:
+  schedule:
+    # LET OP: GitHub Actions-cron draait altijd in UTC en kent geen tijdzones.
+    # Europe/Amsterdam is UTC+1 (wintertijd) of UTC+2 (zomertijd). Daarom plannen
+    # we elke doeltijd twee keer, zodat 08:30 en 13:00 lokale tijd het hele jaar
+    # gehaald worden. De job commit alleen als data/items.json echt verandert,
+    # dus de "extra" run die soms een uur naast zit is onschadelijk.
+    - cron: "30 6 * * *"   # 08:30 zomertijd / 07:30 wintertijd
+    - cron: "30 7 * * *"   # 09:30 zomertijd / 08:30 wintertijd
+    - cron: "0 11 * * *"   # 13:00 zomertijd / 12:00 wintertijd
+    - cron: "0 12 * * *"   # 14:00 zomertijd / 13:00 wintertijd
+  workflow_dispatch: {}     # handmatig starten via de Actions-tab (voor testen)
+
+# Rechten voor de automatische GITHUB_TOKEN: mag terugpushen naar de repo.
+permissions:
+  contents: write
+
+# Voorkom dat twee runs tegelijk pushen.
+concurrency:
+  group: refresh-feeds
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo uitchecken
+        uses: actions/checkout@v4
+
+      - name: Python opzetten
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Feeds ophalen
+        run: python3 scripts/run_fetch.py
+
+      - name: Wijzigingen committen en pushen
+        run: |
+          # Niks doen als data/items.json ongewijzigd is.
+          if git diff --quiet -- data/items.json; then
+            echo "Geen wijzigingen in data/items.json — niets te committen."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/items.json
+          git commit -m "data: feeds ververst ($(TZ='Europe/Amsterdam' date '+%Y-%m-%d %H:%M %Z'))"
+
+          # Push; bij een race met een andere commit eenmaal opnieuw proberen na rebase.
+          git push || {
+            git pull --rebase --autostash
+            git push
+          }

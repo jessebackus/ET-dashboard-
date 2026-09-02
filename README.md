@@ -18,6 +18,8 @@ eleven-travel-experiments/
 ├── bronnen.md             ← inventarisatie van databronnen (RSS/API-status)
 ├── datamodel.md           ← datamodel, dashboardopzet en vastgelegde keuzes
 ├── requirements.txt       ← v1 heeft geen verplichte packages
+├── .github/workflows/
+│   └── refresh-feeds.yml  ← draait run_fetch.py 2x/dag en commit data/items.json
 ├── config/
 │   └── sources.json       ← de vaste lijst met bronnen (RSS-feeds)
 ├── src/
@@ -80,12 +82,25 @@ python3 scripts/generate_dummy_data.py
 Overschrijft `data/items.json` met ~14 fictieve items. Handig om los van de feeds
 iets te testen; draai daarna weer `run_fetch.py` voor echte data.
 
+## Automatisch verversen (GitHub Actions)
+
+`.github/workflows/refresh-feeds.yml` draait `run_fetch.py` op GitHub en commit een
+gewijzigde `data/items.json` terug naar `main`.
+
+- **Schema:** 2x per dag, 08:30 en 13:00 Europe/Amsterdam. GitHub-cron draait in UTC
+  en kent geen tijdzones, dus elke tijd is dubbel ingepland (voor zomer- én wintertijd).
+  Er wordt alleen gecommit als de data echt verandert, dus de "extra" run doet niets.
+- **Handmatig testen:** Actions-tab → *Feeds verversen* → *Run workflow*.
+- **Rechten:** de workflow gebruikt de ingebouwde `GITHUB_TOKEN` met `contents: write`;
+  geen extra secrets of tokens nodig.
+- De automatische commits komen van `github-actions[bot]`.
+
 ## Vastgelegde keuzes
 
 | Onderwerp | Keuze |
 |-----------|-------|
 | v1-bronnen | 4 actieve NL RSS-feeds (zie `config/sources.json`); Transport-online staat op `uit` (te veel ruis) |
-| Ophaalmomenten | dagelijks 08:30 en 13:00 (Europe/Amsterdam) — automatisch plannen komt later |
+| Ophaalmomenten | dagelijks 08:30 en 13:00 (Europe/Amsterdam), via GitHub Actions |
 | User-Agent | `InternalDashboardTest/0.1` — **geen bedrijfsnaam** tijdens de testfase |
 | Bewaartermijn | 180 dagen, daarna opschonen |
 | Samenvatting | max 150 tekens — nooit volledige artikelen opslaan |
@@ -102,6 +117,5 @@ iets te testen; draai daarna weer `run_fetch.py` voor echte data.
 
 - Feeds van Follow the Beat / Festileaks testen met een echte User-Agent.
 - Dashboard overzetten naar de definitieve hosting (waarschijnlijk Lovable).
-- Automatisch plannen van `run_fetch.py` op 08:30 en 13:00.
 - Datumherkenning voor festivalagenda-items (datum staat nu in de titel, niet in `published_at`).
 - Eventueel `feedparser` inzetten voor robuustere feed-parsing.

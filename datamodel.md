@@ -130,7 +130,9 @@ Later over te zetten naar Lovable.
 
 1. **Extra busreizen-bron(nen)** zoeken — de buskant is nu erg dun (1 feed, ~3 items).
 2. Feeds van Follow the Beat / Festileaks testen met een echte User-Agent.
-3. Dashboard-frontend (waarschijnlijk Lovable) die `data/items.json` inleest.
-4. Automatisch plannen van `run_fetch.py` op 08:30 en 13:00.
-5. Eventueel `feedparser` inzetten voor robuustere feed-parsing.
-6. Overwegen: keyword-relevantiefilter per bron, mochten we later brede feeds toevoegen.
+3. Dashboard overzetten naar de definitieve hosting (waarschijnlijk Lovable).
+4. Eventueel `feedparser` inzetten voor robuustere feed-parsing.
+5. Overwegen: keyword-relevantiefilter per bron, mochten we later brede feeds toevoegen.
+
+Gereed: automatisch verversen via GitHub Actions (`.github/workflows/refresh-feeds.yml`),
+2x/dag + handmatige trigger, commit terug naar `main`.

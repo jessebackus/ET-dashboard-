@@ -1,0 +1,9 @@
+# v1 draait volledig op de Python-standaardbibliotheek: geen verplichte packages.
+#
+# Optioneel, als we later een robuustere feed-parser willen:
+#   feedparser>=6.0
+#
+# Installeren (in een virtuele omgeving):
+#   python3 -m venv .venv
+#   source .venv/bin/activate
+#   pip install -r requirements.txt

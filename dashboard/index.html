@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Festival &amp; Busreizen Dashboard</title>
+  <style>
+    /* ---- Kleuren: licht als basis, donker via prefers-color-scheme ---- */
+    :root {
+      --bg: #f4f4f5;
+      --surface: #ffffff;
+      --border: #e4e4e7;
+      --text: #18181b;
+      --text-soft: #52525b;
+      --accent: #7c3aed;
+      --festival: #7c3aed;
+      --busreizen: #0d9488;
+      --chip-bg: #f4f4f5;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #18181b;
+        --surface: #232327;
+        --border: #35353b;
+        --text: #f4f4f5;
+        --text-soft: #a1a1aa;
+        --accent: #a78bfa;
+        --festival: #a78bfa;
+        --busreizen: #2dd4bf;
+        --chip-bg: #2a2a30;
+      }
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 24px 16px 64px; }
+
+    header h1 { margin: 0 0 4px; font-size: 22px; }
+    header p { margin: 0; color: var(--text-soft); }
+    .meta { margin-top: 8px; font-size: 13px; color: var(--text-soft); }
+
+    /* ---- KPI-tegels ---- */
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 20px 0; }
+    .kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+    .kpi .n { font-size: 22px; font-weight: 600; }
+    .kpi .l { font-size: 12px; color: var(--text-soft); }
+    @media (max-width: 560px) { .kpis { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ---- Filterbalk ---- */
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .controls input, .controls select {
+      font: inherit; padding: 8px 10px; border: 1px solid var(--border);
+      border-radius: 8px; background: var(--surface); color: var(--text);
+    }
+    .controls input[type="search"] { flex: 1 1 220px; }
+
+    .themes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+    .themes button {
+      font: inherit; font-size: 13px; padding: 6px 12px; border-radius: 999px;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text-soft);
+      cursor: pointer;
+    }
+    .themes button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+    .count { font-size: 13px; color: var(--text-soft); margin-bottom: 12px; }
+
+    /* ---- Kaarten ---- */
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid var(--border); border-radius: 10px;
+      padding: 14px 16px; margin-bottom: 10px;
+    }
+    .card.festival { border-left-color: var(--festival); }
+    .card.busreizen { border-left-color: var(--busreizen); }
+    .card h3 { margin: 0 0 6px; font-size: 16px; line-height: 1.35; }
+    .card h3 a { color: var(--text); text-decoration: none; }
+    .card h3 a:hover { text-decoration: underline; }
+    .card .cardmeta { font-size: 12px; color: var(--text-soft); margin-bottom: 6px; }
+    .card .summary { margin: 0; color: var(--text-soft); font-size: 14px; }
+    .tags { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px; }
+    .tag {
+      font-size: 11px; padding: 2px 8px; border-radius: 999px;
+      background: var(--chip-bg); color: var(--text-soft); border: 1px solid var(--border);
+    }
+
+    .note { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; color: var(--text-soft); }
+    code { background: var(--chip-bg); padding: 1px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1>Festival &amp; Busreizen Dashboard</h1>
+      <p>Marktontwikkelingen rond de festivalbranche en busreizen naar festivals.</p>
+      <div class="meta" id="meta">Laden…</div>
+    </header>
+
+    <section class="kpis" id="kpis" hidden>
+      <div class="kpi"><div class="n" id="kpi-total">0</div><div class="l">items totaal</div></div>
+      <div class="kpi"><div class="n" id="kpi-festival">0</div><div class="l">festival</div></div>
+      <div class="kpi"><div class="n" id="kpi-busreizen">0</div><div class="l">busreizen</div></div>
+      <div class="kpi"><div class="n" id="kpi-week">0</div><div class="l">laatste 7 dagen</div></div>
+    </section>
+
+    <div class="controls" id="controls" hidden>
+      <input type="search" id="q" placeholder="Zoek in titel en samenvatting…">
+      <select id="category">
+        <option value="">Alle categorieën</option>
+        <option value="festival">Festival</option>
+        <option value="busreizen">Busreizen</option>
+      </select>
+      <select id="source"><option value="">Alle bronnen</option></select>
+      <select id="sort">
+        <option value="new">Nieuwste eerst</option>
+        <option value="old">Oudste eerst</option>
+      </select>
+    </div>
+
+    <div class="themes" id="themes" hidden>
+      <button data-theme="all" class="active">Alles</button>
+      <button data-theme="announce">Aankondigingen &amp; line-ups</button>
+      <button data-theme="trends">Trends &amp; cijfers</button>
+      <button data-theme="policy">Beleid &amp; incidenten</button>
+    </div>
+
+    <div class="count" id="count" hidden></div>
+    <div id="list"></div>
+  </div>
+
+  <script>
+    // ---- Instellingen ----
+    // De data wordt gevuld door scripts/run_fetch.py. Dit dashboard leest alleen.
+    const DATA_URL = "../data/items.json";
+
+    // Welke tags horen bij welke themaknop.
+    const THEME_TAGS = {
+      all: null,
+      announce: ["aankondiging", "line-up"],
+      trends: ["trend", "cijfers", "ticketing"],
+      policy: ["beleid", "incident"],
+    };
+
+    let ITEMS = [];
+    let activeTheme = "all";
+
+    const $ = (id) => document.getElementById(id);
+
+    // ---- Datum netjes tonen (bv. "1 sep 2026") ----
+    function formatDate(iso) {
+      const d = new Date(iso);
+      if (isNaN(d)) return "";
+      return d.toLocaleDateString("nl-NL", { day: "numeric", month: "short", year: "numeric" });
+    }
+
+    function escapeHtml(s) {
+      return (s || "").replace(/[&<>"']/g, (c) => (
+        { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+      ));
+    }
+
+    // ---- Ophalen ----
+    async function load() {
+      try {
+        const resp = await fetch(DATA_URL, { cache: "no-store" });
+        if (!resp.ok) throw new Error("HTTP " + resp.status);
+        ITEMS = await resp.json();
+      } catch (err) {
+        $("meta").textContent = "";
+        $("list").innerHTML = `
+          <div class="note">
+            <p><strong>Kan <code>data/items.json</code> niet laden.</strong> (${escapeHtml(String(err))})</p>
+            <p>Open dit dashboard via een lokale webserver, niet als los bestand:</p>
+            <p>1. In de projectmap: <code>python3 -m http.server 8000</code><br>
+               2. Ga naar <code>http://localhost:8000/dashboard/</code></p>
+            <p>Draai eerst <code>python3 scripts/run_fetch.py</code> om de data te vullen.</p>
+          </div>`;
+        return;
+      }
+      initFilters();
+      render();
+    }
+
+    // ---- Filters klaarzetten ----
+    function initFilters() {
+      // Bronnen-dropdown vullen op basis van de data.
+      const bronnen = [...new Set(ITEMS.map((it) => it.source_name))].sort();
+      for (const b of bronnen) {
+        const opt = document.createElement("option");
+        opt.value = b; opt.textContent = b;
+        $("source").appendChild(opt);
+      }
+
+      ["kpis", "controls", "themes", "count"].forEach((id) => ($(id).hidden = false));
+
+      ["q", "category", "source", "sort"].forEach((id) => {
+        $(id).addEventListener("input", render);
+      });
+      $("themes").addEventListener("click", (e) => {
+        if (e.target.tagName !== "BUTTON") return;
+        activeTheme = e.target.dataset.theme;
+        for (const btn of $("themes").children) btn.classList.toggle("active", btn === e.target);
+        render();
+      });
+
+      // KPI's (veranderen niet mee met de filters).
+      const now = Date.now();
+      const week = now - 7 * 24 * 3600 * 1000;
+      $("kpi-total").textContent = ITEMS.length;
+      $("kpi-festival").textContent = ITEMS.filter((it) => it.category === "festival").length;
+      $("kpi-busreizen").textContent = ITEMS.filter((it) => it.category === "busreizen").length;
+      $("kpi-week").textContent = ITEMS.filter((it) => new Date(it.published_at).getTime() >= week).length;
+
+      // "Laatst bijgewerkt" = nieuwste fetched_at.
+      const laatst = ITEMS.map((it) => it.fetched_at).sort().pop();
+      $("meta").textContent = `${ITEMS.length} items · laatst opgehaald ${formatDate(laatst)}`;
+    }
+
+    // ---- Filteren + tonen ----
+    function currentFilter() {
+      const q = $("q").value.trim().toLowerCase();
+      const cat = $("category").value;
+      const src = $("source").value;
+      const themeTags = THEME_TAGS[activeTheme];
+
+      return ITEMS.filter((it) => {
+        if (cat && it.category !== cat) return false;
+        if (src && it.source_name !== src) return false;
+        if (themeTags && !it.tags.some((t) => themeTags.includes(t))) return false;
+        if (q) {
+          const hay = (it.title + " " + it.summary).toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function render() {
+      let rows = currentFilter();
+      rows.sort((a, b) => {
+        const cmp = a.published_at.localeCompare(b.published_at);
+        return $("sort").value === "old" ? cmp : -cmp;
+      });
+
+      $("count").textContent = `${rows.length} van ${ITEMS.length} items`;
+
+      $("list").innerHTML = rows.map((it) => `
+        <article class="card ${escapeHtml(it.category)}">
+          <h3><a href="${escapeHtml(it.source_url)}" target="_blank" rel="noopener">${escapeHtml(it.title)}</a></h3>
+          <div class="cardmeta">${escapeHtml(it.source_name)} · ${formatDate(it.published_at)}</div>
+          ${it.summary ? `<p class="summary">${escapeHtml(it.summary)}</p>` : ""}
+          ${it.tags.length ? `<div class="tags">${it.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
+        </article>
+      `).join("") || `<div class="note">Geen items die aan de filters voldoen.</div>`;
+    }
+
+    load();
+  </script>
+</body>
+</html>

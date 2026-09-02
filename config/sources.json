@@ -1,0 +1,43 @@
+[
+  {
+    "name": "Festivalinfo – nieuws",
+    "type": "rss",
+    "url": "https://www.festivalinfo.nl/rss/FestivalinfoNewsRSS.xml",
+    "category": "festival",
+    "status": "actief",
+    "language": "nl"
+  },
+  {
+    "name": "Festivalinfo – festivalagenda",
+    "type": "rss",
+    "url": "https://www.festivalinfo.nl/rss/FestivalinfoFestivalRSS.xml",
+    "category": "festival",
+    "status": "actief",
+    "language": "nl"
+  },
+  {
+    "name": "FestivalFans.nl",
+    "type": "rss",
+    "url": "https://festivalfans.nl/feed/",
+    "category": "festival",
+    "status": "actief",
+    "language": "nl"
+  },
+  {
+    "name": "Mobiliteit.nl – touringcar",
+    "type": "rss",
+    "url": "https://www.mobiliteit.nl/tag/touringcar/feed/",
+    "category": "busreizen",
+    "status": "actief",
+    "language": "nl"
+  },
+  {
+    "name": "Transport-online.nl",
+    "type": "rss",
+    "url": "https://www.transport-online.nl/feed/",
+    "category": "busreizen",
+    "status": "uit",
+    "language": "nl",
+    "note": "Algemene transport-/logistiekfeed zonder touringcar-filter; leverde 0 relevante items. Uit v1 gehaald 2026-09-02."
+  }
+]

@@ -83,8 +83,12 @@ Eenvoudige keyword-matching op `title` + `summary` (Nederlands/Engels):
 
 - Vaste bronnenlijst: `config/sources.json` (lijst van `source`-objecten).
 - Verzamelde items: `data/items.json` (JSON-array van `item`-objecten, nieuwste eerst).
+- Ophaalstatus per bron: `data/fetch_state.json` (lokaal, niet in git) — `last_success`,
+  `last_status`, `consecutive_failures`. Diagnostiek; wordt elke run bijgewerkt.
 - Dedup op `id`. Nieuwe run voegt alleen nieuwe items toe.
-- Retentie: items ouder dan **180 dagen** worden bij elke run opgeschoond.
+- Retentie: items ouder dan **180 dagen** worden bij elke run opgeschoond — **behalve** items
+  van een bron die in díe run niet kon worden opgehaald (dan blijft de laatst bekende set staan,
+  zodat een tijdelijke storing de sectie niet leegtrekt).
 - Geen database nodig in concept-fase.
 
 ---

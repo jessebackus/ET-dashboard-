@@ -53,6 +53,16 @@ Haalt de actieve bronnen uit `config/sources.json` op, voegt nieuwe items toe aa
 `data/items.json` (ontdubbeld op `id`) en verwijdert items ouder dan 180 dagen.
 `data/items.json` bevat momenteel echte feed-metadata van de eerste testrun.
 
+**Bestand tegen tijdelijke storingen:**
+- Verzoeken gaan met browser-achtige `Accept`-headers (sommige bronnen weigeren "kale" requests).
+- Bij een tijdelijke fout (HTTP 403/429/5xx of netwerkfout) volgen er tot 2 nieuwe pogingen
+  met oplopende wachttijd; een `Retry-After`-header wordt gevolgd, maar nooit langer dan 120 s
+  (vraagt de server om meer, dan slaan we die bron deze run over).
+- Faalt een bron alsnog, dan blijven de laatst bekende items van die bron staan — ook als ze
+  ouder zijn dan 180 dagen — zodat een storing die sectie van het dashboard niet leegtrekt.
+- `data/fetch_state.json` (lokaal, niet in git) houdt per bron het laatste resultaat bij
+  (`last_success`, `last_status`, `consecutive_failures`).
+
 ### 2. Tests draaien
 
 ```bash

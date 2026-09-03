@@ -8,3 +8,6 @@ venv/
 .vscode/
 .idea/
 .DS_Store
+
+# Lokaal ophaal-logboek per bron (diagnostiek; wordt elke run opnieuw opgebouwd)
+data/fetch_state.json

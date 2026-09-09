@@ -1,5 +1,39 @@
 [
   {
+    "title": "11/09 - 13/09 : Rapunzel Festival - Vleuten, NL",
+    "summary": "",
+    "published_at": "2026-09-09T13:10:04+02:00",
+    "fetched_at": "2026-09-09T11:11:35.263784+00:00",
+    "source_name": "Festivalinfo – festivalagenda",
+    "source_url": "https://www.festivalinfo.nl/festival/37195/Rapunzel-Festival/2026/",
+    "feed_url": "https://www.festivalinfo.nl/rss/FestivalinfoFestivalRSS.xml",
+    "category": "festival",
+    "tags": [],
+    "language": "nl",
+    "festivals": [],
+    "region": null,
+    "image_url": null,
+    "id": "3a1c04194bf0ae64"
+  },
+  {
+    "title": "Jera On Air maakt eerste headliner bekend voor 2027",
+    "summary": "Jera On Air, het grootste festival voor de punk, hardcore en metalcore liefhebbers in Nederland, heeft de allereerste headliner voor 2027 bekendgemaa…",
+    "published_at": "2026-09-09T12:46:27+02:00",
+    "fetched_at": "2026-09-09T11:11:32.309284+00:00",
+    "source_name": "Festivalinfo – nieuws",
+    "source_url": "https://www.festivalinfo.nl/news/59305/Jera-On-Air-maakt-eerste-headliner-bekend-voor-2027/",
+    "feed_url": "https://www.festivalinfo.nl/rss/FestivalinfoNewsRSS.xml",
+    "category": "festival",
+    "tags": [
+      "line-up"
+    ],
+    "language": "nl",
+    "festivals": [],
+    "region": null,
+    "image_url": null,
+    "id": "fdf3f8e2dc62fd6e"
+  },
+  {
     "title": "Alcest kondigt Europese tour in 2027 aan met Agriculture als special guest",
     "summary": "De Franse blackgazeband Alcest gaat in het voorjaar van 2027 op tour door Europa. Als special guest reist Agriculture mee. Alcest treedt op in 013 in…",
     "published_at": "2026-09-08T11:00:00+02:00",

@@ -1,5 +1,37 @@
 [
   {
+    "title": "11/09 - 12/09 : Backyard Festival - Merksplas, Be",
+    "summary": "",
+    "published_at": "2026-09-11T08:40:05+02:00",
+    "fetched_at": "2026-09-11T06:45:18.573281+00:00",
+    "source_name": "Festivalinfo – festivalagenda",
+    "source_url": "https://www.festivalinfo.nl/festival/37201/Backyard-Festival/2026/",
+    "feed_url": "https://www.festivalinfo.nl/rss/FestivalinfoFestivalRSS.xml",
+    "category": "festival",
+    "tags": [],
+    "language": "nl",
+    "festivals": [],
+    "region": null,
+    "image_url": null,
+    "id": "a1609124c95a5ea9"
+  },
+  {
+    "title": "12/09 - 12/09 : Rocketfest - Rotterdam, NL",
+    "summary": "",
+    "published_at": "2026-09-11T08:40:05+02:00",
+    "fetched_at": "2026-09-11T06:45:18.573281+00:00",
+    "source_name": "Festivalinfo – festivalagenda",
+    "source_url": "https://www.festivalinfo.nl/festival/37003/Rocketfest/2026/",
+    "feed_url": "https://www.festivalinfo.nl/rss/FestivalinfoFestivalRSS.xml",
+    "category": "festival",
+    "tags": [],
+    "language": "nl",
+    "festivals": [],
+    "region": null,
+    "image_url": null,
+    "id": "69a367177fed616b"
+  },
+  {
     "title": "Baroeg Open Air volledig aangedreven door waterstof",
     "summary": "Baroeg Open Air zet dit jaar in op een duurzamere productie. Het festival maakt op locatie gebruik van waterstofenergie en beschikt daarvoor over een…",
     "published_at": "2026-09-09T15:01:06+02:00",
